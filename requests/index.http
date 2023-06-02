@@ -1,0 +1,28 @@
+# Get all roles
+GET http://localhost:3000/roles
+
+###
+GET http://localhost:3000/roles/12
+
+###
+# create new role
+POST http://localhost:3000/roles
+Content-Type: application/json
+
+{
+  "name": "QA Engineer",
+  "parentId": 7
+}
+
+###
+# update projects
+PATCH http://localhost:3000/roles/12
+Content-Type: application/json
+
+{
+  "description": "I break the product for the developers to fix"
+}
+
+###
+# delete a role along with its children
+DELETE http://localhost:3000/roles/12

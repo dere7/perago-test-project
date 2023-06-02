@@ -1,9 +1,8 @@
 import { Module } from "@nestjs/common";
-import { AppController } from "./app.controller";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { DataSource } from "typeorm";
-import { Role } from "./entities/role.entities";
 import { ConfigModule, ConfigService } from "@nestjs/config";
+import { RolesModule } from "./roles/roles.module";
 
 @Module({
   imports: [
@@ -16,14 +15,13 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
         username: config.get("dbUser"),
         password: config.get("dbPassword"),
         database: "orga_structure",
-        entities: [Role],
+        autoLoadEntities: true,
         synchronize: true,
       }),
       inject: [ConfigService],
     }),
+    RolesModule,
   ],
-  controllers: [AppController],
-  providers: [],
 })
 export class AppModule {
   constructor(dataSource: DataSource) {

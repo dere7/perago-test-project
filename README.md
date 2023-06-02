@@ -14,6 +14,7 @@ Perago Information Systems's NestJS API project
 ## Requirements
 
 Build web application(API) for registering organization's employee hierarchy or structure.
+
 > Assume medium level organization management structure with different level of positions/roles Hierarchy. At the top of the Hierarch there is CEO and every position below a given hierarchy will answer/Report to the immediate position in the organization's position structure hierarchy
 
 1. shall create employee position/role
@@ -50,13 +51,14 @@ CEO
 5. Model (you can update this model if needed)
 
 | Column      | Type   |
-|-------------|--------|
+| ----------- | ------ |
 | id          | GUID   |
 | name        | string |
 | description | string |
-| parentId    |GUID    |
+| parentId    | GUID   |
 
 6.
+
 ```text
   a. Insert new employee position/role
     - Every position/role must contain minimum information like Name, Description and Managing position/role to whom the position Report To etc.
@@ -97,4 +99,3 @@ CEO
 
 - [PostgreSQL Documentation](https://www.postgresql.org/docs/9.6/postgres-fdw.html)
 - [SQL Server](https://docs.microsoft.com/en-us/sql/sql-server/?view=sql-server-ver16)
-  
