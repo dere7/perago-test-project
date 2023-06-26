@@ -34,7 +34,7 @@ export class Role {
 
   @ApiHideProperty()
   @TreeParent({ onDelete: "CASCADE" })
-  parent: Role;
+  reportsTo: Role;
 
   @ApiHideProperty()
   @TreeChildren()

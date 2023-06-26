@@ -15,7 +15,7 @@ export class RolesService {
     const role = new Role();
     role.name = name;
     role.description = description;
-    role.parent = await this.rolesRepository.findOneBy({ id: parentId });
+    role.reportsTo = await this.rolesRepository.findOneBy({ id: parentId });
     return this.rolesRepository.save(role);
   }
 
@@ -24,19 +24,36 @@ export class RolesService {
   }
 
   async findOne(id: number) {
-    const role = await this.rolesRepository.findOneBy({ id });
-    if (role) return role;
-    throw new NotFoundException(`Can't find role with id '${id}'`);
+    const role = await this.rolesRepository.findOne({
+      where: { id },
+      relations: { reportsTo: true, children: true },
+    });
+    if (!role) {
+      throw new NotFoundException(`Can't find role with id '${id}'`);
+    }
+    return role;
   }
 
   async update(id: number, updateRoleDto: UpdateRoleDto) {
-    await this.rolesRepository.update(id, updateRoleDto);
-    const role = await this.rolesRepository.findOneBy({ id });
-    if (role) return role;
-    throw new NotFoundException(`Can't find role with id '${id}'`);
+    const role = await this.findOne(id);
+    if (!role) {
+      throw new NotFoundException(`Can't find role with id '${id}'`);
+    }
+    const { parentId } = updateRoleDto;
+    delete updateRoleDto.parentId;
+    await this.rolesRepository.update(id, {
+      reportsTo: (await this.findOne(parentId)) || role.reportsTo,
+      ...updateRoleDto,
+    });
+    return this.findOne(id);
   }
 
-  remove(id: number) {
-    this.rolesRepository.delete(id);
+  async remove(id: number) {
+    const role = await this.findOne(id);
+    role.children?.forEach(async (child) => {
+      child.reportsTo = role.reportsTo;
+      await this.rolesRepository.save(child);
+    });
+    await this.rolesRepository.delete(id);
   }
 }

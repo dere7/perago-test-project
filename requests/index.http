@@ -2,7 +2,7 @@
 GET http://localhost:3000/roles
 
 ###
-GET http://localhost:3000/roles/12
+GET http://localhost:3000/roles/5
 
 ###
 # create new role
@@ -10,8 +10,25 @@ POST http://localhost:3000/roles
 Content-Type: application/json
 
 {
-  "name": "QA Engineer",
-  "parentId": 7
+  "name": "Hiring officer",
+  "parentId": 5
+}
+
+###
+# create CTO && add as parent of Projecct Manager
+POST http://localhost:3000/roles
+Content-Type: application/json
+
+{
+  "name": "CTO",
+  "parentId": 1
+}
+###
+PATCH http://localhost:3000/roles/6
+Content-Type: application/json
+
+{
+  "parentId": 12
 }
 
 ###
@@ -25,4 +42,4 @@ Content-Type: application/json
 
 ###
 # delete a role along with its children
-DELETE http://localhost:3000/roles/12
+DELETE http://localhost:3000/roles/11
