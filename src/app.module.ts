@@ -3,7 +3,6 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { DataSource } from "typeorm";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { RolesModule } from "./roles/roles.module";
-
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -12,9 +11,12 @@ import { RolesModule } from "./roles/roles.module";
         type: "postgres",
         host: config.get("HOST") || "localhost",
         port: Number(config.get("PORT")) || 5432,
-        username: config.get("USER"),
+        username: config.get("DB_USERNAME"),
         password: config.get("PASSWORD"),
-        database: config.get("DATABASE") || "orga_structure",
+        database:
+          config.get("NODE_ENV") === "test"
+            ? config.get("TEST_DB")
+            : config.get("DATABASE"),
         autoLoadEntities: true,
         synchronize: config.get("NODE_ENV") !== "production",
       }),
@@ -25,6 +27,7 @@ import { RolesModule } from "./roles/roles.module";
 })
 export class AppModule {
   constructor(dataSource: DataSource) {
-    if (dataSource.isInitialized) console.log("Connected to DB");
+    if (dataSource.isInitialized)
+      console.log("Connected to DB:", dataSource.options.database);
   }
 }

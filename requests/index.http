@@ -10,8 +10,9 @@ POST http://localhost:3000/roles
 Content-Type: application/json
 
 {
-  "name": "Hiring officer",
-  "parentId": 5
+  "name": "CTO",
+  "description": "Chief Technology Officer(CTO) manages the physical and personnel technology infrastructure including technology deployment, network and system management, integration testing, and developing technical operations personnel",
+  "parentId": 1
 }
 
 ###
@@ -28,7 +29,7 @@ PATCH http://localhost:3000/roles/6
 Content-Type: application/json
 
 {
-  "parentId": 12
+  "parentId": 8
 }
 
 ###
@@ -42,4 +43,4 @@ Content-Type: application/json
 
 ###
 # delete a role along with its children
-DELETE http://localhost:3000/roles/11
+DELETE http://localhost:3000/roles/2

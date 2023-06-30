@@ -1,5 +1,5 @@
 --
--- PostgreSQL database dump
+-- root database dump
 --
 
 -- Dumped from database version 15.3 (Ubuntu 15.3-1.pgdg22.04+1)
@@ -21,7 +21,7 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- Name: role; Type: TABLE; Schema: public; Owner: postgres
+-- Name: role; Type: TABLE; Schema: public; Owner: root
 --
 
 CREATE TABLE public.role (
@@ -33,10 +33,10 @@ CREATE TABLE public.role (
 );
 
 
-ALTER TABLE public.role OWNER TO postgres;
+ALTER TABLE public.role OWNER TO root;
 
 --
--- Name: role_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: role_id_seq; Type: SEQUENCE; Schema: public; Owner: root
 --
 
 CREATE SEQUENCE public.role_id_seq
@@ -48,24 +48,24 @@ CREATE SEQUENCE public.role_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.role_id_seq OWNER TO postgres;
+ALTER TABLE public.role_id_seq OWNER TO root;
 
 --
--- Name: role_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- Name: role_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: root
 --
 
 ALTER SEQUENCE public.role_id_seq OWNED BY public.role.id;
 
 
 --
--- Name: role id; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: role id; Type: DEFAULT; Schema: public; Owner: root
 --
 
 ALTER TABLE ONLY public.role ALTER COLUMN id SET DEFAULT nextval('public.role_id_seq'::regclass);
 
 
 --
--- Data for Name: role; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: role; Type: TABLE DATA; Schema: public; Owner: root
 --
 
 COPY public.role (id, name, description, mpath, "reportsToId") FROM stdin;
@@ -80,14 +80,14 @@ COPY public.role (id, name, description, mpath, "reportsToId") FROM stdin;
 
 
 --
--- Name: role_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+-- Name: role_id_seq; Type: SEQUENCE SET; Schema: public; Owner: root
 --
 
 SELECT pg_catalog.setval('public.role_id_seq', 7, true);
 
 
 --
--- Name: role PK_b36bcfe02fc8de3c57a8b2391c2; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: role PK_b36bcfe02fc8de3c57a8b2391c2; Type: CONSTRAINT; Schema: public; Owner: root
 --
 
 ALTER TABLE ONLY public.role
@@ -95,7 +95,7 @@ ALTER TABLE ONLY public.role
 
 
 --
--- Name: role FK_384d68e3c9979f3af7f8a92fb81; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: role FK_384d68e3c9979f3af7f8a92fb81; Type: FK CONSTRAINT; Schema: public; Owner: root
 --
 
 ALTER TABLE ONLY public.role
@@ -103,6 +103,6 @@ ALTER TABLE ONLY public.role
 
 
 --
--- PostgreSQL database dump complete
+-- root database dump complete
 --
 

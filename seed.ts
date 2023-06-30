@@ -1,3 +1,5 @@
+import * as dotenv from "dotenv";
+dotenv.config();
 import { Role } from "./src/roles/entities/role.entities";
 import { DataSource } from "typeorm";
 
@@ -53,11 +55,11 @@ const data: RoleData[] = [
 
 export const AppDataSource = new DataSource({
   type: "postgres",
-  host: "localhost",
-  port: 5432,
-  username: "postgres",
-  password: "root",
-  database: "orga_structure",
+  host: process.env["HOST"] || "localhost",
+  port: Number(process.env["PORT"]) || 5432,
+  username: process.env["DB_USERNAME"],
+  password: process.env["PASSWORD"],
+  database: process.env["DATABASE"] || "orga_structure",
   synchronize: true,
   logging: true,
   entities: [Role],
