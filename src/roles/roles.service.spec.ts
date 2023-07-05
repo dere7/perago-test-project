@@ -51,30 +51,37 @@ describe("RolesService", () => {
 
   it("updates a role", async () => {
     jest.spyOn(rolesService, "findOne").mockImplementation(async () => ({
-      id: 1,
+      id: "40647cab-1a21-4af9-92ff-996a0e59508d",
       name: "CEO",
       reportsTo: null,
       children: [],
+      employees: [],
     }));
 
-    await rolesService.update(1, {
+    await rolesService.update("40647cab-1a21-4af9-92ff-996a0e59508d", {
       description: "who doesn't dare to be a boss",
     });
 
-    expect(rolesRepository.update).toHaveBeenLastCalledWith(1, {
-      reportsTo: undefined,
-      description: "who doesn't dare to be a boss",
-    });
+    expect(rolesRepository.update).toHaveBeenLastCalledWith(
+      "40647cab-1a21-4af9-92ff-996a0e59508d",
+      {
+        reportsTo: undefined,
+        description: "who doesn't dare to be a boss",
+      },
+    );
   });
 
   it("delete a role", async () => {
     jest.spyOn(rolesService, "findOne").mockImplementation(async () => ({
-      id: 1,
+      id: "40647cab-1a21-4af9-92ff-996a0e59508d",
       name: "CEO",
       reportsTo: null,
       children: [],
+      employees: [],
     }));
-    await rolesService.remove(1);
-    expect(rolesRepository.delete).toHaveBeenCalledWith(1);
+    await rolesService.remove("40647cab-1a21-4af9-92ff-996a0e59508d");
+    expect(rolesRepository.delete).toHaveBeenCalledWith(
+      "40647cab-1a21-4af9-92ff-996a0e59508d",
+    );
   });
 });

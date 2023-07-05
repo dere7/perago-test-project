@@ -7,7 +7,6 @@ import { Role } from "src/roles/entities/role.entities";
 
 describe("Roles E2E", () => {
   let app: INestApplication;
-  let rolesService: RolesService;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -16,7 +15,6 @@ describe("Roles E2E", () => {
 
     app = moduleFixture.createNestApplication();
     app.useGlobalPipes(new ValidationPipe());
-    rolesService = app.get(RolesService);
     await app.init();
   });
 
@@ -113,7 +111,7 @@ describe("Roles E2E", () => {
 
       it("for non-existing role should return 404", async () => {
         return request(app.getHttpServer())
-          .get(`/roles/3453435`)
+          .get(`/roles/bc248988-2b89-426b-a1cc-616575d23fad`)
           .expect(404)
           .expect(/error/)
           .expect(/Not Found/);
@@ -134,14 +132,14 @@ describe("Roles E2E", () => {
 
       it("should return 404 if the role doesn't exist", () => {
         return request(app.getHttpServer())
-          .patch("/roles/3353533")
+          .patch("/roles/bc248988-2b89-426b-a1cc-616575d23fa1")
           .expect(404)
           .expect(/Not Found/);
       });
 
-      it("should return 400 if the id isn't valid", () => {
+      it("should return 400 if the id isn't valid UUID", () => {
         return request(app.getHttpServer())
-          .patch("/roles/d3d")
+          .patch("/roles/3535")
           .expect(400)
           .expect(/Bad Request/);
       });
@@ -162,15 +160,15 @@ describe("Roles E2E", () => {
           .expect(204);
       });
 
-      it("should update roles parent from deleted role to its parent", async () => {
-        await request(app.getHttpServer()).delete(`/roles/${cto.id}`);
-        ceo = await rolesService.findOne(ceo.id);
-        expect(ceo.children[0]?.name).toBe("Backend Developer");
+      it("should return forbidden if the role has children", async () => {
+        await request(app.getHttpServer())
+          .delete(`/roles/${cto.id}`)
+          .expect(403);
       });
 
-      it("should return 400 if the id isn't valid", () => {
+      it("should return 400 if the id isn't valid UUID", () => {
         return request(app.getHttpServer())
-          .delete("/roles/d3d")
+          .delete("/roles/xxxddd777")
           .expect(400)
           .expect(/Bad Request/);
       });

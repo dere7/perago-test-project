@@ -1,9 +1,13 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 import { CreateRoleDto } from "./dto/create-role.dto";
 import { UpdateRoleDto } from "./dto/update-role.dto";
 import { Role } from "./entities/role.entities";
 import { InjectRepository } from "@nestjs/typeorm";
-import { TreeRepository, UpdateDateColumn } from "typeorm";
+import { TreeRepository } from "typeorm";
 
 @Injectable()
 export class RolesService {
@@ -27,7 +31,7 @@ export class RolesService {
     return this.rolesRepository.findTrees();
   }
 
-  async findOne(id: number) {
+  async findOne(id: string) {
     const role = await this.rolesRepository.findOne({
       where: { id },
       relations: { reportsTo: true, children: true },
@@ -38,7 +42,7 @@ export class RolesService {
     return role;
   }
 
-  async update(id: number, updateRoleDto: UpdateRoleDto) {
+  async update(id: string, updateRoleDto: UpdateRoleDto) {
     const role = await this.findOne(id);
     if (!role) {
       throw new NotFoundException(`Can't find role with id '${id}'`);
@@ -57,11 +61,12 @@ export class RolesService {
     return this.findOne(id);
   }
 
-  async remove(id: number) {
+  async remove(id: string) {
     const role = await this.findOne(id);
-    for await (const child of role.children) {
-      child.reportsTo = role.reportsTo;
-      await this.rolesRepository.save(child);
+    if (role.children.length !== 0) {
+      throw new ForbiddenException(
+        "Other roles report to this role. So, update those roles, before deleting this role",
+      );
     }
     await this.rolesRepository.delete(id);
   }

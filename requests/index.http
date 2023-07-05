@@ -43,4 +43,4 @@ Content-Type: application/json
 
 ###
 # delete a role along with its children
-DELETE http://localhost:3000/roles/2
+DELETE http://localhost:3000/roles/40647cab-1a21-4af9-92ff-996a0e59508f

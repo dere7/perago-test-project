@@ -1,8 +1,10 @@
 import { ApiHideProperty, ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
+import { IsNotEmpty, IsOptional, IsString, IsUUID } from "class-validator";
+import { Employee } from "../../employees/entities/employee.entity";
 import {
   Column,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
   Tree,
   TreeChildren,
@@ -12,8 +14,8 @@ import {
 @Entity()
 @Tree("materialized-path")
 export class Role {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn("uuid")
+  id: string;
 
   @ApiProperty()
   @Column({ length: 100 })
@@ -35,9 +37,9 @@ export class Role {
     description:
       "parents role id to whom the current role reports to. It is optional in the case of the topmost role(e.g. CEO)",
   })
-  @IsNumber()
+  @IsUUID()
   @IsOptional()
-  parentId?: number;
+  parentId?: string;
 
   @ApiHideProperty()
   @TreeParent({ onDelete: "CASCADE" })
@@ -46,4 +48,10 @@ export class Role {
   @ApiHideProperty()
   @TreeChildren()
   children: Role[];
+
+  @ManyToOne(() => Employee, (employee) => employee.role, {
+    nullable: true,
+    cascade: ["remove"],
+  })
+  employees: Employee[];
 }

@@ -3,6 +3,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { DataSource } from "typeorm";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { RolesModule } from "./roles/roles.module";
+import { EmployeesModule } from './employees/employees.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -23,6 +24,7 @@ import { RolesModule } from "./roles/roles.module";
       inject: [ConfigService],
     }),
     RolesModule,
+    EmployeesModule,
   ],
 })
 export class AppModule {

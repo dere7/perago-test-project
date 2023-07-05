@@ -1,0 +1,29 @@
+POST http://localhost:3000/employees
+Content-Type: application/json
+
+{
+  "firstName": "Abebe",
+  "lastName": "Tesfu",
+  "gender": "M",
+  "birthDate": "2000-03-05T11:51:06.753Z",
+  "hireDate": "2020-07-05T11:51:06.753Z",
+  "roleId": "fc619034-ee3f-41bd-a056-65db041b33f0",
+  "photo": "https://robohash.org/hicveldicta.png?size=50x50&set=set1"
+}
+
+###
+GET http://localhost:3000/employees/
+###
+GET http://localhost:3000/employees/13f4d7f9-1d60-4126-9867-5aa8fc4878a1
+
+###
+PATCH http://localhost:3000/employees/13f4d7f9-1d60-4126-9867-5aa8fc4878a1
+Content-Type: application/json
+
+{
+  "photo": "https://robohash.org/hicveldicta.png?size=50x50&set=set1"
+}
+
+
+###
+DELETE http://localhost:3000/employees/bc248988-2b89-426b-a1cc-616575d23fa1

@@ -2,6 +2,7 @@ import * as dotenv from "dotenv";
 dotenv.config();
 import { Role } from "./src/roles/entities/role.entities";
 import { DataSource } from "typeorm";
+import { Employee } from "./src/employees/entities/employee.entity";
 
 type RoleData = {
   name: string;
@@ -62,21 +63,22 @@ export const AppDataSource = new DataSource({
   database: process.env["DATABASE"] || "orga_structure",
   synchronize: true,
   logging: true,
-  entities: [Role],
+  entities: [Role, Employee],
 });
 
 async function main() {
   await AppDataSource.initialize();
   for (const r of data) {
-    const role = new Role();
-    role.name = r.name;
-    role.description = r.description;
+    let reportsTo;
     if (r.reportsTo) {
-      const parent = await AppDataSource.manager.findOneBy(Role, {
+      reportsTo = await AppDataSource.manager.findOneBy(Role, {
         name: r.reportsTo,
       });
-      role.reportsTo = parent;
     }
+    const role = AppDataSource.manager.create(Role, {
+      ...r,
+      reportsTo,
+    });
     await AppDataSource.manager.save(role);
   }
   console.log("finished generating and saving test data");
