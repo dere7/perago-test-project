@@ -3,7 +3,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { DataSource } from "typeorm";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { RolesModule } from "./roles/roles.module";
-import { EmployeesModule } from './employees/employees.module';
+import { EmployeesModule } from "./employees/employees.module";
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -12,7 +12,7 @@ import { EmployeesModule } from './employees/employees.module';
         type: "postgres",
         host: config.get("HOST") || "localhost",
         port: Number(config.get("PORT")) || 5432,
-        username: config.get("DB_USERNAME"),
+        username: config.get("DB_USERNAME") || "org_user",
         password: config.get("PASSWORD"),
         database:
           config.get("NODE_ENV") === "test"
@@ -20,6 +20,7 @@ import { EmployeesModule } from './employees/employees.module';
             : config.get("DATABASE"),
         autoLoadEntities: true,
         synchronize: config.get("NODE_ENV") !== "production",
+        ssl: true,
       }),
       inject: [ConfigService],
     }),
