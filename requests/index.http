@@ -1,5 +1,9 @@
-# Get all roles
+# Get heirarchy of roles
 GET http://localhost:3000/roles
+
+
+### Get list of roles
+GET http://localhost:3000/roles?flat=true
 
 ###
 GET http://localhost:3000/roles/5

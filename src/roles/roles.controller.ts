@@ -10,13 +10,12 @@ import {
   HttpStatus,
   ParseUUIDPipe,
   Query,
-  ValidationPipe,
+  DefaultValuePipe,
+  ParseBoolPipe,
 } from "@nestjs/common";
 import { RolesService } from "./roles.service";
 import { CreateRoleDto } from "./dto/create-role.dto";
 import { UpdateRoleDto } from "./dto/update-role.dto";
-
-class ValidateRoleResultType extends ValidationPipe {}
 
 @Controller("roles")
 export class RolesController {
@@ -28,8 +27,11 @@ export class RolesController {
   }
 
   @Get()
-  async findAll() {
-    const roles = this.rolesService.findAll();
+  async findAll(
+    @Query("flat", new DefaultValuePipe(false), ParseBoolPipe)
+    type: boolean,
+  ) {
+    const roles = this.rolesService.findAll(type);
     return roles;
   }
 

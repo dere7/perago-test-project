@@ -27,8 +27,10 @@ export class RolesService {
     return this.rolesRepository.save(role);
   }
 
-  findAll() {
-    return this.rolesRepository.findTrees();
+  findAll(isFlat) {
+    if (isFlat)
+      return this.rolesRepository.find({ relations: { employees: true } });
+    return this.rolesRepository.findTrees({ relations: ["employees"] });
   }
 
   async findOne(id: string) {
