@@ -1,5 +1,14 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsDate, IsEnum, IsNotEmpty, IsString, IsUUID } from "class-validator";
+import {
+  IsDate,
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsPhoneNumber,
+  IsString,
+  IsUUID,
+} from "class-validator";
 import { Role } from "../../roles/entities/role.entities";
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Transform } from "class-transformer";
@@ -18,13 +27,17 @@ export class Employee {
   @IsString()
   @IsNotEmpty()
   @Column()
-  firstName: string;
+  fullName: string;
 
   @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
-  @Column()
-  lastName: string;
+  @IsEmail()
+  @Column({ unique: true })
+  email: string;
+
+  @ApiProperty()
+  @IsPhoneNumber("ET")
+  @Column({ unique: true })
+  phone: string;
 
   @ApiProperty()
   @IsEnum(Gender)
@@ -50,7 +63,8 @@ export class Employee {
   @IsUUID()
   roleId: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
+  @IsOptional()
   @Column({ nullable: true })
   photo: string;
 

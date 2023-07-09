@@ -12,10 +12,14 @@ import {
   Query,
   DefaultValuePipe,
   ParseBoolPipe,
+  ParseIntPipe,
 } from "@nestjs/common";
 import { RolesService } from "./roles.service";
 import { CreateRoleDto } from "./dto/create-role.dto";
 import { UpdateRoleDto } from "./dto/update-role.dto";
+import { DeleteRoleDto } from "./dto/delete-role.dto";
+import { ApiQuery } from "@nestjs/swagger";
+import { DepthQueryDto, FlatQueryDto } from "./dto/find-all-query.dto";
 
 @Controller("roles")
 export class RolesController {
@@ -26,13 +30,14 @@ export class RolesController {
     return this.rolesService.create(createRoleDto);
   }
 
+  @ApiQuery({ name: "flat", type: FlatQueryDto })
+  @ApiQuery({ name: "depth", type: DepthQueryDto })
   @Get()
-  async findAll(
-    @Query("flat", new DefaultValuePipe(false), ParseBoolPipe)
-    type: boolean,
+  findAll(
+    @Query("flat", new DefaultValuePipe(false), ParseBoolPipe) isFlat,
+    @Query("depth") depth: number,
   ) {
-    const roles = this.rolesService.findAll(type);
-    return roles;
+    return this.rolesService.findAll(isFlat, depth);
   }
 
   @Get(":id")
@@ -50,7 +55,7 @@ export class RolesController {
 
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(":id")
-  remove(@Param("id", ParseUUIDPipe) id: string) {
-    return this.rolesService.remove(id);
+  remove(@Param("id", ParseUUIDPipe) id: string, @Body() body: DeleteRoleDto) {
+    return this.rolesService.remove(id, body);
   }
 }

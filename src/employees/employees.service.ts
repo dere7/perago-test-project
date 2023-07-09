@@ -1,9 +1,13 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 import { CreateEmployeeDto } from "./dto/create-employee.dto";
 import { UpdateEmployeeDto } from "./dto/update-employee.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Employee } from "./entities/employee.entity";
-import { Repository } from "typeorm";
+import { Like, QueryFailedError, Repository } from "typeorm";
 import { RolesService } from "src/roles/roles.service";
 
 @Injectable()
@@ -20,11 +24,53 @@ export class EmployeesService {
       role: await this.rolesService.findOne(createEmployeeDto.roleId),
     });
 
-    return this.employeesRepository.save(employee);
+    try {
+      const newEmployee = await this.employeesRepository.save(employee);
+      return newEmployee;
+    } catch (err: unknown) {
+      if (
+        err instanceof QueryFailedError &&
+        err.driverError?.code === "23505"
+      ) {
+        if ((err.driverError?.detail as string).includes("email"))
+          throw new BadRequestException(
+            "Employee with this email already exists.",
+          );
+        else
+          throw new BadRequestException(
+            "Employee with this phone number already exists.",
+          );
+      }
+      throw err;
+    }
   }
 
-  findAll() {
-    return this.employeesRepository.find({ relations: { role: true } });
+  async countAll() {
+    return this.employeesRepository.count();
+  }
+
+  async findAll(q = "", page = 1, limit = 10) {
+    const skip = (page - 1) * limit,
+      take = limit;
+
+    const results = await this.employeesRepository.find({
+      skip,
+      take,
+      where: {
+        fullName: Like(`%${q}%`),
+      },
+      order: {
+        fullName: "ASC",
+      },
+      relations: { role: true },
+    });
+
+    return {
+      page,
+      limit,
+      total: await this.countAll(),
+      results,
+    };
   }
 
   async findOne(id: string) {

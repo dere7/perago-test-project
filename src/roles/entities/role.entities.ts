@@ -4,7 +4,7 @@ import { Employee } from "../../employees/entities/employee.entity";
 import {
   Column,
   Entity,
-  ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   Tree,
   TreeChildren,
@@ -49,9 +49,9 @@ export class Role {
   @TreeChildren()
   children: Role[];
 
-  @ManyToOne(() => Employee, (employee) => employee.role, {
-    nullable: true,
-    cascade: ["remove"],
+  @ApiProperty()
+  @OneToMany(() => Employee, (employee) => employee.role, {
+    onDelete: "CASCADE",
   })
   employees: Employee[];
 }

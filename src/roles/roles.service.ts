@@ -8,6 +8,7 @@ import { UpdateRoleDto } from "./dto/update-role.dto";
 import { Role } from "./entities/role.entities";
 import { InjectRepository } from "@nestjs/typeorm";
 import { TreeRepository } from "typeorm";
+import { DeleteRoleDto } from "./dto/delete-role.dto";
 
 @Injectable()
 export class RolesService {
@@ -27,16 +28,19 @@ export class RolesService {
     return this.rolesRepository.save(role);
   }
 
-  findAll(isFlat) {
+  findAll(isFlat: boolean, depth: number) {
     if (isFlat)
-      return this.rolesRepository.find({ relations: { employees: true } });
-    return this.rolesRepository.findTrees({ relations: ["employees"] });
+      return this.rolesRepository.find({
+        relations: { employees: true },
+        order: { name: "ASC" },
+      });
+    return this.rolesRepository.findTrees({ relations: ["employees"], depth });
   }
 
   async findOne(id: string) {
     const role = await this.rolesRepository.findOne({
       where: { id },
-      relations: { reportsTo: true, children: true },
+      relations: { children: true, reportsTo: true, employees: true },
     });
     if (!role) {
       throw new NotFoundException(`Can't find role with id '${id}'`);
@@ -50,11 +54,11 @@ export class RolesService {
       throw new NotFoundException(`Can't find role with id '${id}'`);
     }
     const { parentId } = updateRoleDto;
+    delete updateRoleDto.parentId;
     let reportsTo: Role;
     if (parentId) {
       reportsTo = await this.findOne(parentId);
-      delete updateRoleDto.parentId;
-    }
+    } else reportsTo = null;
 
     await this.rolesRepository.update(id, {
       ...updateRoleDto,
@@ -63,12 +67,19 @@ export class RolesService {
     return this.findOne(id);
   }
 
-  async remove(id: string) {
+  async remove(id: string, { parentId }: DeleteRoleDto) {
     const role = await this.findOne(id);
     if (role.children.length !== 0) {
-      throw new ForbiddenException(
-        "Other roles report to this role. So, update those roles, before deleting this role",
-      );
+      if (!parentId) {
+        throw new ForbiddenException(
+          "Other roles report to this role. So, update those roles, before deleting this role",
+        );
+      }
+      const newParent = await this.findOne(parentId);
+      for await (const child of role.children) {
+        child.reportsTo = newParent;
+        await this.rolesRepository.save(child);
+      }
     }
     await this.rolesRepository.delete(id);
   }

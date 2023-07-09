@@ -4,6 +4,7 @@ import { DataSource } from "typeorm";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { RolesModule } from "./roles/roles.module";
 import { EmployeesModule } from "./employees/employees.module";
+
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -20,7 +21,7 @@ import { EmployeesModule } from "./employees/employees.module";
             : config.get("DATABASE"),
         autoLoadEntities: true,
         synchronize: config.get("NODE_ENV") !== "production",
-        ssl: true,
+        // ssl: true,
       }),
       inject: [ConfigService],
     }),

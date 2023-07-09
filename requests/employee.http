@@ -2,22 +2,23 @@ POST http://localhost:3000/employees
 Content-Type: application/json
 
 {
-  "firstName": "Abebe",
-  "lastName": "Tesfu",
+  "fullName": "Abebe Tesfu",
+  "email": "abebe123@perago.com",
+  "phone": "0987334423",
   "gender": "M",
   "birthDate": "2000-03-05T11:51:06.753Z",
   "hireDate": "2020-07-05T11:51:06.753Z",
-  "roleId": "fc619034-ee3f-41bd-a056-65db041b33f0",
+  "roleId": "d1f323e2-a611-4f49-8297-4f9911d4f266",
   "photo": "https://robohash.org/hicveldicta.png?size=50x50&set=set1"
 }
 
 ###
 GET http://localhost:3000/employees/
 ###
-GET http://localhost:3000/employees/13f4d7f9-1d60-4126-9867-5aa8fc4878a1
+GET http://localhost:3000/employees/3aa1e133-ac30-463c-b2a9-3d1b1ba47733
 
 ###
-PATCH http://localhost:3000/employees/13f4d7f9-1d60-4126-9867-5aa8fc4878a1
+PATCH http://localhost:3000/employees/3aa1e133-ac30-463c-b2a9-3d1b1ba47733
 Content-Type: application/json
 
 {
