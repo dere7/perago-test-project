@@ -20,6 +20,7 @@ import { UpdateRoleDto } from "./dto/update-role.dto";
 import { DeleteRoleDto } from "./dto/delete-role.dto";
 import { ApiQuery } from "@nestjs/swagger";
 import { DepthQueryDto, FlatQueryDto } from "./dto/find-all-query.dto";
+import { LimitDto, PageDto } from "src/employees/dto/findall-query.dto";
 
 @Controller("roles")
 export class RolesController {
@@ -32,17 +33,26 @@ export class RolesController {
 
   @ApiQuery({ name: "flat", type: FlatQueryDto })
   @ApiQuery({ name: "depth", type: DepthQueryDto })
+  @ApiQuery({ name: "page", type: PageDto })
+  @ApiQuery({ name: "limit", type: LimitDto })
   @Get()
   findAll(
     @Query("flat", new DefaultValuePipe(false), ParseBoolPipe) isFlat,
     @Query("depth") depth: number,
+    @Query("page", new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query("limit", new DefaultValuePipe(10), ParseIntPipe) limit: number,
   ) {
-    return this.rolesService.findAll(isFlat, depth);
+    return this.rolesService.findAll(isFlat, depth, page, limit);
   }
 
   @Get(":id")
   findOne(@Param("id", ParseUUIDPipe) id: string) {
     return this.rolesService.findOne(id);
+  }
+
+  @Get(":id/except_descendants")
+  getAllRolesExceptDescendants(@Param("id", ParseUUIDPipe) id: string) {
+    return this.rolesService.getAllRolesExceptDescendants(id);
   }
 
   @Patch(":id")

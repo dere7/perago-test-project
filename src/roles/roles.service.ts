@@ -17,10 +17,10 @@ export class RolesService {
   ) {}
 
   async create(roleData: CreateRoleDto) {
-    let reportsTo;
-    if (roleData.parentId) {
-      reportsTo = await this.findOne(roleData.parentId);
-    }
+    const reportsTo = roleData.parentId
+      ? await this.findOne(roleData.parentId)
+      : undefined;
+
     const role = this.rolesRepository.create({
       ...roleData,
       reportsTo,
@@ -28,12 +28,27 @@ export class RolesService {
     return this.rolesRepository.save(role);
   }
 
-  findAll(isFlat: boolean, depth: number) {
-    if (isFlat)
-      return this.rolesRepository.find({
-        relations: { employees: true },
+  countRoles() {
+    return this.rolesRepository.count();
+  }
+
+  async findAll(isFlat: boolean, depth = Infinity, page = 1, limit = 10) {
+    if (isFlat) {
+      const skip = (page - 1) * limit,
+        take = limit;
+      const roles = await this.rolesRepository.find({
+        take,
+        skip,
+        relations: { employees: true, reportsTo: true },
         order: { name: "ASC" },
       });
+      return {
+        results: roles,
+        total: await this.countRoles(),
+        page,
+        limit,
+      };
+    }
     return this.rolesRepository.findTrees({ relations: ["employees"], depth });
   }
 
@@ -48,23 +63,38 @@ export class RolesService {
     return role;
   }
 
-  async update(id: string, updateRoleDto: UpdateRoleDto) {
+  async update(id: string, { name, description, parentId }: UpdateRoleDto) {
     const role = await this.findOne(id);
-    if (!role) {
-      throw new NotFoundException(`Can't find role with id '${id}'`);
+    const reportsTo = parentId ? await this.findOne(parentId) : undefined;
+    // checks if the new parent isn't a child of the node to be updated
+    // to avoid circular dependency
+    if (reportsTo) {
+      const descendants = await this.rolesRepository.findDescendants(role);
+      if (
+        descendants
+          .map((d) => d.id)
+          .some((descendantId) => descendantId === parentId)
+      ) {
+        throw new ForbiddenException(
+          "can't use descendant of the role to be its parent",
+        );
+      }
     }
-    const { parentId } = updateRoleDto;
-    delete updateRoleDto.parentId;
-    let reportsTo: Role;
-    if (parentId) {
-      reportsTo = await this.findOne(parentId);
-    } else reportsTo = null;
 
     await this.rolesRepository.update(id, {
-      ...updateRoleDto,
+      name,
+      description,
       reportsTo,
     });
     return this.findOne(id);
+  }
+
+  async getAllRolesExceptDescendants(id: string) {
+    const role = await this.findOne(id);
+    const descendants = await this.rolesRepository.findDescendants(role);
+    const descendantIds = descendants.map((r) => r.id);
+    const allRoles = await this.rolesRepository.find();
+    return allRoles.filter((role) => !descendantIds.find((i) => i === role.id));
   }
 
   async remove(id: string, { parentId }: DeleteRoleDto) {
@@ -72,10 +102,16 @@ export class RolesService {
     if (role.children.length !== 0) {
       if (!parentId) {
         throw new ForbiddenException(
-          "Other roles report to this role. So, update those roles, before deleting this role",
+          "Other roles report to this role. Provide new parent for those roles in body",
         );
       }
       const newParent = await this.findOne(parentId);
+      const validParents = await this.getAllRolesExceptDescendants(id);
+      if (validParents.find((r) => r.id === id)) {
+        throw new ForbiddenException(
+          "Can't use children of this role as a new parent",
+        );
+      }
       for await (const child of role.children) {
         child.reportsTo = newParent;
         await this.rolesRepository.save(child);

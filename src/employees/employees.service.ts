@@ -62,7 +62,11 @@ export class EmployeesService {
       order: {
         fullName: "ASC",
       },
-      relations: { role: true },
+      relations: {
+        role: {
+          reportsTo: true,
+        },
+      },
     });
 
     return {

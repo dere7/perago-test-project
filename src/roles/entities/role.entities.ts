@@ -12,7 +12,7 @@ import {
 } from "typeorm";
 
 @Entity()
-@Tree("materialized-path")
+@Tree("closure-table")
 export class Role {
   @PrimaryGeneratedColumn("uuid")
   id: string;

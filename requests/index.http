@@ -3,24 +3,26 @@ GET http://localhost:3000/roles
 
 
 ### Get list of roles
-GET http://localhost:3000/roles?flat=true
+GET http://localhost:3000/roles?flat=true&limit=2&page=2
 
 ###
-GET http://localhost:3000/roles/d1f323e2-a611-4f49-8297-4f9911d4f266
+GET http://localhost:3000/roles/5c69bf11-1ae1-476d-88ad-e398be66c598
 
 ###
-# create new role
+GET http://localhost:3000/roles/5c69bf11-1ae1-476d-88ad-e398be66c598/except_descendants
+
+### create new role
 POST http://localhost:3000/roles
 Content-Type: application/json
 
 {
-  "name": "CTO",
-  "description": "Chief Technology Officer(CTO) manages the physical and personnel technology infrastructure including technology deployment, network and system management, integration testing, and developing technical operations personnel",
-  "parentId": 1
+  "name": "UX designer",
+  "description": "A UX designer is designs the graphical user interface of an app, website, or device that a human interacts with",
+  "parentId": "b8ab33ab-29bf-4271-ad5b-3689733c74fd"
 }
 
 ###
-# create CTO && add as parent of Projecct Manager
+# create CTO && add as parent of Project Manager
 POST http://localhost:3000/roles
 Content-Type: application/json
 
@@ -46,5 +48,8 @@ Content-Type: application/json
 }
 
 ###
-# delete a role along with its children
-DELETE http://localhost:3000/roles/40647cab-1a21-4af9-92ff-996a0e59508f
+# delete a role with no children
+DELETE http://localhost:3000/roles/7fad1be0-5a11-4312-bf88-71420a2393bb
+
+### delete a role with its children
+DELETE http://localhost:3000/roles/ee612665-819b-47a8-b087-a24a44d4c932

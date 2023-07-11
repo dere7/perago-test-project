@@ -79,7 +79,7 @@ describe("RolesService", () => {
       children: [],
       employees: [],
     }));
-    await rolesService.remove("40647cab-1a21-4af9-92ff-996a0e59508d");
+    await rolesService.remove("40647cab-1a21-4af9-92ff-996a0e59508d", {});
     expect(rolesRepository.delete).toHaveBeenCalledWith(
       "40647cab-1a21-4af9-92ff-996a0e59508d",
     );

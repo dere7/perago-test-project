@@ -4,6 +4,23 @@ import { Role } from "./src/roles/entities/role.entities";
 import { DataSource } from "typeorm";
 import { Employee } from "./src/employees/entities/employee.entity";
 
+const getAllUsers = async () => {
+  const response = await fetch(
+    "https://randomuser.me/api?page=1&results=20&seed=abc",
+  );
+  const data = await response.json();
+  const employees = data.results.map((u) => ({
+    fullName: u.name.first + " " + u.name.last,
+    email: u.email,
+    phone: u.phone,
+    gender: u.gender === "female" ? "F" : "M",
+    birthDate: u.dob.date,
+    hireDate: u.registered.date,
+    photo: u.picture.large,
+  }));
+  return employees;
+};
+
 type RoleData = {
   name: string;
   reportsTo?: string;
@@ -52,6 +69,78 @@ const data: RoleData[] = [
     description:
       "The project owner is typically the head of the business unit that proposed the project or is the recipient of the project output or product.",
   },
+  {
+    name: "Tech Lead",
+    reportsTo: "Product Owner",
+    description:
+      "A technical lead is a professional who oversees a team of technical personnel at a software or technology company",
+  },
+  {
+    name: "Frontend Developer",
+    reportsTo: "Tech Lead",
+    description:
+      "A front-end developer builds the front-end portion of websites and web applications—the part users see and interact with",
+  },
+  {
+    name: "Backend Developer",
+    reportsTo: "Tech Lead",
+    description:
+      "Back-end developers are the experts who build and maintain the mechanisms that process data and perform actions on websites",
+  },
+  {
+    name: "DevOps Developer",
+    reportsTo: "Tech Lead",
+    description:
+      "A DevOps engineer works with both the development and operations teams to create and implement software systems",
+  },
+  {
+    name: "QA Engineer",
+    reportsTo: "Product Owner",
+    description:
+      "A QA engineer creates tests that identify issues with software before a product launch.",
+  },
+  {
+    name: "Scrum Master",
+    reportsTo: "Product Owner",
+    description:
+      "A Scrum Master is a professional who leads a team using Agile project management through the course of a project",
+  },
+  {
+    name: "Chief Accountant",
+    reportsTo: "CFO",
+    description:
+      "Contribute to the preparation of the annual revenue and capital budgets, monitoring of financial performance and completion of the annual accounts.",
+  },
+  {
+    name: "Internal Audit",
+    reportsTo: "CFO",
+    description:
+      "Internal auditors examine and analyze company records and financial documents",
+  },
+  {
+    name: "Financial Analyst",
+    reportsTo: "Chief Accountant",
+    description:
+      "Financial analysts are responsible for a variety of research tasks to inform investment strategy and make investment decisions for their company or clients",
+  },
+  {
+    name: "Product Manger",
+    reportsTo: "COO",
+    description:
+      "A project manager is a professional who organizes, plans, and executes projects while working within restraints like budgets and schedules",
+  },
+  {
+    name: "Operation Manger",
+    reportsTo: "COO",
+    description:
+      "An operations manager is responsible for implementing and maintaining the processes that an organization uses",
+  },
+  {
+    name: "Customer Relation",
+    reportsTo: "COO",
+    description:
+      "Customer Relation handle the concerns of the people who buy their company's products or services",
+  },
 ];
 
 export const AppDataSource = new DataSource({
@@ -62,13 +151,19 @@ export const AppDataSource = new DataSource({
   password: process.env["PASSWORD"],
   database: process.env["DATABASE"] || "orga_structure",
   synchronize: true,
-  logging: true,
+  // logging: true,
   entities: [Role, Employee],
+  // ssl: true,
 });
 
 async function main() {
   await AppDataSource.initialize();
-  for (const r of data) {
+  await AppDataSource.manager.delete(Role, {});
+  await AppDataSource.manager.delete(Employee, {});
+  const employees = await getAllUsers();
+  for (let i = 0; i < data.length; i++) {
+    const r = data[i];
+    const e = employees[i];
     let reportsTo;
     if (r.reportsTo) {
       reportsTo = await AppDataSource.manager.findOneBy(Role, {
@@ -79,7 +174,12 @@ async function main() {
       ...r,
       reportsTo,
     });
-    await AppDataSource.manager.save(role);
+    const newRole = await AppDataSource.manager.save(role);
+    const employee = AppDataSource.manager.create(Employee, {
+      ...e,
+      role: newRole,
+    });
+    await AppDataSource.manager.save(employee);
   }
   console.log("finished generating and saving test data");
 }
