@@ -68,6 +68,14 @@ export class RolesService {
     return role;
   }
 
+  async allEmployeesUnderARole(id: string) {
+    const role = await this.findOne(id);
+    const descendants = await this.rolesRepository.findDescendants(role, {
+      relations: ["employees"],
+    });
+    return descendants;
+  }
+
   async update(id: string, { name, description, parentId }: UpdateRoleDto) {
     const role = await this.findOne(id);
     const reportsTo = parentId ? await this.findOne(parentId) : undefined;

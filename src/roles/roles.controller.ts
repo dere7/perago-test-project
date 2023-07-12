@@ -18,7 +18,7 @@ import { RolesService } from "./roles.service";
 import { CreateRoleDto } from "./dto/create-role.dto";
 import { UpdateRoleDto } from "./dto/update-role.dto";
 import { DeleteRoleDto } from "./dto/delete-role.dto";
-import { ApiQuery } from "@nestjs/swagger";
+import { ApiProperty, ApiQuery, ApiResponse } from "@nestjs/swagger";
 import { DepthQueryDto, FlatQueryDto } from "./dto/find-all-query.dto";
 import { LimitDto, PageDto } from "src/employees/dto/findall-query.dto";
 
@@ -48,6 +48,16 @@ export class RolesController {
   @Get(":id")
   findOne(@Param("id", ParseUUIDPipe) id: string) {
     return this.rolesService.findOne(id);
+  }
+
+  @ApiResponse({
+    status: "2XX",
+    description:
+      "returns all roles along their associated employees under them",
+  })
+  @Get(":id/employees")
+  findEmployeesOfRole(@Param("id", ParseUUIDPipe) id: string) {
+    return this.rolesService.allEmployeesUnderARole(id);
   }
 
   @Get(":id/except_descendants")
