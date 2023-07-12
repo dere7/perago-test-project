@@ -42,10 +42,15 @@ export class RolesService {
         relations: { employees: true, reportsTo: true },
         order: { name: "ASC" },
       });
+
+      const total = await this.countRoles();
+      const pages = Math.ceil(total / limit);
+
       return {
         results: roles,
-        total: await this.countRoles(),
+        total,
         page,
+        pages,
         limit,
       };
     }

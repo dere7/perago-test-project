@@ -69,10 +69,14 @@ export class EmployeesService {
       },
     });
 
+    const total = await this.countAll();
+    const pages = Math.ceil(total / limit);
+
     return {
       page,
       limit,
-      total: await this.countAll(),
+      total,
+      pages,
       results,
     };
   }
