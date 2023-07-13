@@ -8,8 +8,8 @@ Perago Information Systems's NestJS API project
 - Execute `npm install` to install required dependence.
 - Create database credentials. Execute `cp .env.example .env` and populate values for each key.
 - Create a database named `orga_structure`.
-- Execute `nest start`..
-- Access and test your api via swagger <http://localhost:3000/api>.
+- Execute `nest start`.
+- Access and test your api via swagger <http://localhost:3000/doc>.
 
 ## Requirements
 
