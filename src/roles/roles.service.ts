@@ -16,14 +16,11 @@ export class RolesService {
     @InjectRepository(Role) private rolesRepository: TreeRepository<Role>,
   ) {}
 
-  async create(roleData: CreateRoleDto) {
-    const reportsTo = roleData.parentId
-      ? await this.findOne(roleData.parentId)
-      : undefined;
-
+  async create({ name, description, parentId }: CreateRoleDto) {
     const role = this.rolesRepository.create({
-      ...roleData,
-      reportsTo,
+      name,
+      description,
+      reportsTo: parentId ? await this.findOne(parentId) : null,
     });
     return this.rolesRepository.save(role);
   }
@@ -32,27 +29,12 @@ export class RolesService {
     return this.rolesRepository.count();
   }
 
-  async findAll(isFlat: boolean, depth = Infinity, page = 1, limit = 10) {
+  async findAll(isFlat: boolean, depth = Infinity) {
     if (isFlat) {
-      const skip = (page - 1) * limit,
-        take = limit;
-      const roles = await this.rolesRepository.find({
-        take,
-        skip,
+      return this.rolesRepository.find({
         relations: { employees: true, reportsTo: true },
         order: { name: "ASC" },
       });
-
-      const total = await this.countRoles();
-      const pages = Math.ceil(total / limit);
-
-      return {
-        results: roles,
-        total,
-        page,
-        pages,
-        limit,
-      };
     }
     return this.rolesRepository.findTrees({ relations: ["employees"], depth });
   }

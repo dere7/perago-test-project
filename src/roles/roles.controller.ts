@@ -12,15 +12,13 @@ import {
   Query,
   DefaultValuePipe,
   ParseBoolPipe,
-  ParseIntPipe,
 } from "@nestjs/common";
 import { RolesService } from "./roles.service";
 import { CreateRoleDto } from "./dto/create-role.dto";
 import { UpdateRoleDto } from "./dto/update-role.dto";
 import { DeleteRoleDto } from "./dto/delete-role.dto";
-import { ApiProperty, ApiQuery, ApiResponse } from "@nestjs/swagger";
+import { ApiQuery, ApiResponse } from "@nestjs/swagger";
 import { DepthQueryDto, FlatQueryDto } from "./dto/find-all-query.dto";
-import { LimitDto, PageDto } from "src/employees/dto/findall-query.dto";
 
 @Controller("roles")
 export class RolesController {
@@ -33,16 +31,12 @@ export class RolesController {
 
   @ApiQuery({ name: "flat", type: FlatQueryDto })
   @ApiQuery({ name: "depth", type: DepthQueryDto })
-  @ApiQuery({ name: "page", type: PageDto })
-  @ApiQuery({ name: "limit", type: LimitDto })
   @Get()
   findAll(
     @Query("flat", new DefaultValuePipe(false), ParseBoolPipe) isFlat,
     @Query("depth") depth: number,
-    @Query("page", new DefaultValuePipe(1), ParseIntPipe) page: number,
-    @Query("limit", new DefaultValuePipe(10), ParseIntPipe) limit: number,
   ) {
-    return this.rolesService.findAll(isFlat, depth, page, limit);
+    return this.rolesService.findAll(isFlat, depth);
   }
 
   @Get(":id")
@@ -53,7 +47,7 @@ export class RolesController {
   @ApiResponse({
     status: "2XX",
     description:
-      "returns all roles along their associated employees under them",
+      "returns all roles along their associated employees under specified role",
   })
   @Get(":id/employees")
   findEmployeesOfRole(@Param("id", ParseUUIDPipe) id: string) {
