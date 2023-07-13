@@ -6,7 +6,7 @@ GET http://localhost:3000/roles
 GET http://localhost:3000/roles?flat=true&limit=2&page=2
 
 ###
-GET http://localhost:3000/roles/5c69bf11-1ae1-476d-88ad-e398be66c598
+GET http://localhost:3000/roles/
 
 ###
 GET http://localhost:3000/roles/5c69bf11-1ae1-476d-88ad-e398be66c598/except_descendants

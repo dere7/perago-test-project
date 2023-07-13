@@ -7,7 +7,7 @@ import { CreateRoleDto } from "./dto/create-role.dto";
 import { UpdateRoleDto } from "./dto/update-role.dto";
 import { Role } from "./entities/role.entities";
 import { InjectRepository } from "@nestjs/typeorm";
-import { TreeRepository } from "typeorm";
+import { In, Not, TreeRepository } from "typeorm";
 import { DeleteRoleDto } from "./dto/delete-role.dto";
 
 @Injectable()
@@ -29,7 +29,7 @@ export class RolesService {
     return this.rolesRepository.count();
   }
 
-  async findAll(isFlat: boolean, depth = Infinity) {
+  async findAll(isFlat = false, depth = Infinity) {
     if (isFlat) {
       return this.rolesRepository.find({
         relations: { employees: true, reportsTo: true },
@@ -50,7 +50,7 @@ export class RolesService {
     return role;
   }
 
-  async allEmployeesUnderARole(id: string) {
+  async findAllDescendants(id: string) {
     const role = await this.findOne(id);
     const descendants = await this.rolesRepository.findDescendants(role, {
       relations: ["employees"],
@@ -58,22 +58,25 @@ export class RolesService {
     return descendants;
   }
 
+  // checks if role2 is descendant of role1
+  async isDescendant(roleId1: string, roleId2: string) {
+    const role = await this.findOne(roleId1);
+    const descendants = await this.rolesRepository.findDescendants(role);
+    if (descendants.map((d) => d.id).includes(roleId2)) {
+      return true;
+    }
+    return false;
+  }
+
   async update(id: string, { name, description, parentId }: UpdateRoleDto) {
-    const role = await this.findOne(id);
+    await this.findOne(id); // check if the role exists
     const reportsTo = parentId ? await this.findOne(parentId) : undefined;
     // checks if the new parent isn't a child of the node to be updated
     // to avoid circular dependency
-    if (reportsTo) {
-      const descendants = await this.rolesRepository.findDescendants(role);
-      if (
-        descendants
-          .map((d) => d.id)
-          .some((descendantId) => descendantId === parentId)
-      ) {
-        throw new ForbiddenException(
-          "can't use descendant of the role to be its parent",
-        );
-      }
+    if (reportsTo && (await this.isDescendant(id, parentId))) {
+      throw new ForbiddenException(
+        "can't use descendant of the role to be its parent",
+      );
     }
 
     await this.rolesRepository.update(id, {
@@ -88,8 +91,11 @@ export class RolesService {
     const role = await this.findOne(id);
     const descendants = await this.rolesRepository.findDescendants(role);
     const descendantIds = descendants.map((r) => r.id);
-    const allRoles = await this.rolesRepository.find();
-    return allRoles.filter((role) => !descendantIds.find((i) => i === role.id));
+    return this.rolesRepository.find({
+      where: {
+        id: Not(In(descendantIds)),
+      },
+    });
   }
 
   async remove(id: string, { parentId }: DeleteRoleDto) {
@@ -101,8 +107,7 @@ export class RolesService {
         );
       }
       const newParent = await this.findOne(parentId);
-      const validParents = await this.getAllRolesExceptDescendants(id);
-      if (validParents.find((r) => r.id === id)) {
+      if (await this.isDescendant(id, parentId)) {
         throw new ForbiddenException(
           "Can't use children of this role as a new parent",
         );

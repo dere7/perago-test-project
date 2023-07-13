@@ -51,7 +51,7 @@ export class RolesController {
   })
   @Get(":id/employees")
   findEmployeesOfRole(@Param("id", ParseUUIDPipe) id: string) {
-    return this.rolesService.allEmployeesUnderARole(id);
+    return this.rolesService.findAllDescendants(id);
   }
 
   @Get(":id/except_descendants")

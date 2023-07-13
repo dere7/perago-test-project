@@ -93,12 +93,8 @@ export class EmployeesService {
   }
 
   async update(id: string, updateEmployeeDto: UpdateEmployeeDto) {
-    const employee = await this.employeesRepository.preload({
-      id,
-      ...updateEmployeeDto,
-    });
-
-    return this.employeesRepository.save(employee);
+    await this.employeesRepository.update(id, updateEmployeeDto);
+    return this.findOne(id);
   }
 
   async remove(id: string) {
