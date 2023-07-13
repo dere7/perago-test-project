@@ -106,9 +106,10 @@ describe("EmployeesService", () => {
 
   it("update employee", async () => {
     const updates = { fullName: "New Name" };
+    jest.spyOn(service, "findOne").mockReturnValue(Promise.resolve(null));
     await service.update("xxx", updates);
-    expect(repo.preload).toHaveBeenCalledWith({ id: "xxx", ...updates });
-    expect(repo.save).toHaveBeenCalled();
+    expect(repo.update).toHaveBeenCalledWith("xxx", updates);
+    expect(service.findOne).toHaveBeenCalled();
   });
 
   it("delete employee", async () => {

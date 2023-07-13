@@ -156,7 +156,7 @@ describe("RolesService", () => {
       }));
     });
 
-    it("should call update and findOne(once) if new parentId is not included in body", async () => {
+    it("should call update and findOne(twice) if new parentId is not included in body", async () => {
       await rolesService.update("40647cab", {
         description: "who doesn't dare to be a boss",
       });
@@ -164,7 +164,7 @@ describe("RolesService", () => {
       expect(rolesRepository.update).toHaveBeenCalledWith("40647cab", {
         description: "who doesn't dare to be a boss",
       });
-      expect(rolesService.findOne).toHaveBeenCalledTimes(1);
+      expect(rolesService.findOne).toHaveBeenCalledTimes(2);
     });
 
     it("should call update if new parentId is included in body and is not descendant", async () => {
