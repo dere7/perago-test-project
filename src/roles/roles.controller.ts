@@ -17,9 +17,10 @@ import { RolesService } from "./roles.service";
 import { CreateRoleDto } from "./dto/create-role.dto";
 import { UpdateRoleDto } from "./dto/update-role.dto";
 import { DeleteRoleDto } from "./dto/delete-role.dto";
-import { ApiQuery, ApiResponse } from "@nestjs/swagger";
+import { ApiQuery, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { DepthQueryDto, FlatQueryDto } from "./dto/find-all-query.dto";
 
+@ApiTags("roles")
 @Controller("roles")
 export class RolesController {
   constructor(private readonly rolesService: RolesService) {}

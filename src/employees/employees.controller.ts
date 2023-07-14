@@ -16,9 +16,10 @@ import {
 import { EmployeesService } from "./employees.service";
 import { CreateEmployeeDto } from "./dto/create-employee.dto";
 import { UpdateEmployeeDto } from "./dto/update-employee.dto";
-import { ApiQuery } from "@nestjs/swagger";
+import { ApiQuery, ApiTags } from "@nestjs/swagger";
 import { LimitDto, PageDto, SearchTextDto } from "./dto/findall-query.dto";
 
+@ApiTags("employees")
 @Controller("employees")
 export class EmployeesController {
   constructor(private readonly employeesService: EmployeesService) {}

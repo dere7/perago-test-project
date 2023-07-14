@@ -1,27 +1,17 @@
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
-import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
+import { SwaggerModule } from "@nestjs/swagger";
 import { ValidationPipe } from "@nestjs/common";
+import { swaggerConfig, swaggerOptions } from "./swagger";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors();
 
-  const config = new DocumentBuilder()
-    .setTitle("Perago Information Systems - Organizational Hierarchy")
-    .setVersion("1.0")
-    .addTag("PIS")
-    .build();
-
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup("doc", app, document, {
-    customSiteTitle: "Perago Information systems",
-    customfavIcon: "http://peragosystems.com/favicon.ico",
-    customCss: `
-      .topbar-wrapper img { content: url('http://peragosystems.com/assets/images/perago-white.png'); width:150px; height:auto;}
-      .swagger-ui .topbar { background-color: #55ba4a; }
-    `,
+  const document = SwaggerModule.createDocument(app, swaggerConfig, {
+    operationIdFactory: (_, methodKey: string) => methodKey,
   });
+  SwaggerModule.setup("doc", app, document, swaggerOptions);
 
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
 
