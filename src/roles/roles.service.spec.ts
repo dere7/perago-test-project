@@ -56,6 +56,7 @@ describe("RolesService", () => {
             find: jest.fn(),
             findOne: jest.fn(),
             update: jest.fn(),
+            preload: jest.fn(),
             delete: jest.fn(),
             findTrees: jest.fn(),
             findDescendants: jest.fn(async (role) => role.children),
@@ -161,10 +162,11 @@ describe("RolesService", () => {
         description: "who doesn't dare to be a boss",
       });
 
-      expect(rolesRepository.update).toHaveBeenCalledWith("40647cab", {
+      expect(rolesRepository.preload).toHaveBeenCalledWith({
+        id: "40647cab",
         description: "who doesn't dare to be a boss",
       });
-      expect(rolesService.findOne).toHaveBeenCalledTimes(2);
+      expect(rolesService.findOne).toHaveBeenCalledTimes(1);
     });
 
     it("should call update if new parentId is included in body and is not descendant", async () => {
@@ -176,7 +178,8 @@ describe("RolesService", () => {
         description: "who doesn't dare to be a boss",
       });
 
-      expect(rolesRepository.update).toHaveBeenCalledWith("40647cab", {
+      expect(rolesRepository.preload).toHaveBeenCalledWith({
+        id: "40647cab",
         description: "who doesn't dare to be a boss",
         reportsTo: ceoData,
       });

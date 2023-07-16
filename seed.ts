@@ -158,8 +158,8 @@ export const AppDataSource = new DataSource({
 
 async function main() {
   await AppDataSource.initialize();
-  await AppDataSource.manager.delete(Role, {});
   await AppDataSource.manager.delete(Employee, {});
+  await AppDataSource.manager.delete(Role, {});
   const employees = await getAllUsers();
   for (let i = 0; i < data.length; i++) {
     const r = data[i];

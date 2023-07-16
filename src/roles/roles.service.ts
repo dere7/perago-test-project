@@ -53,9 +53,18 @@ export class RolesService {
   async findAllDescendants(id: string) {
     const role = await this.findOne(id);
     const descendants = await this.rolesRepository.findDescendants(role, {
-      relations: ["employees"],
+      relations: ["employees", "reportsTo"],
     });
-    return descendants;
+    const employees = descendants
+      .map(({ id, employees }) => employees.map((e) => ({ ...e, roleId: id })))
+      .flat();
+    for await (const e of employees) {
+      e.role = await this.rolesRepository.findOne({
+        where: { id: e.roleId },
+        relations: { reportsTo: true },
+      });
+    }
+    return employees;
   }
 
   // checks if role2 is descendant of role1
