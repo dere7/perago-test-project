@@ -9,15 +9,13 @@ import {
   ParseUUIDPipe,
   HttpStatus,
   HttpCode,
-  DefaultValuePipe,
-  ParseIntPipe,
   Query,
 } from "@nestjs/common";
 import { EmployeesService } from "./employees.service";
 import { CreateEmployeeDto } from "./dto/create-employee.dto";
 import { UpdateEmployeeDto } from "./dto/update-employee.dto";
-import { ApiQuery, ApiTags } from "@nestjs/swagger";
-import { LimitDto, PageDto, SearchTextDto } from "./dto/findall-query.dto";
+import { ApiTags } from "@nestjs/swagger";
+import { EmployeeFindAllQueryDto } from "./dto/findall-query.dto";
 
 @ApiTags("employees")
 @Controller("employees")
@@ -29,15 +27,8 @@ export class EmployeesController {
     return this.employeesService.create(createEmployeeDto);
   }
 
-  @ApiQuery({ name: "q", type: SearchTextDto })
-  @ApiQuery({ name: "page", type: PageDto })
-  @ApiQuery({ name: "limit", type: LimitDto })
   @Get()
-  findAll(
-    @Query("q", new DefaultValuePipe("")) q: string,
-    @Query("page", new DefaultValuePipe(1), ParseIntPipe) page: number,
-    @Query("limit", new DefaultValuePipe(10), ParseIntPipe) limit: number,
-  ) {
+  findAll(@Query() { q, page, limit }: EmployeeFindAllQueryDto) {
     return this.employeesService.findAll(q, page, limit);
   }
 

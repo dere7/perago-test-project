@@ -1,6 +1,6 @@
 import * as dotenv from "dotenv";
 dotenv.config();
-import { Role } from "./src/roles/entities/role.entities";
+import { Role } from "./src/roles/entities/role.entity";
 import { DataSource } from "typeorm";
 import { Employee } from "./src/employees/entities/employee.entity";
 

@@ -5,7 +5,7 @@ import {
 } from "@nestjs/common";
 import { CreateRoleDto } from "./dto/create-role.dto";
 import { UpdateRoleDto } from "./dto/update-role.dto";
-import { Role } from "./entities/role.entities";
+import { Role } from "./entities/role.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { In, Not, TreeRepository } from "typeorm";
 import { DeleteRoleDto } from "./dto/delete-role.dto";
@@ -78,13 +78,13 @@ export class RolesService {
         "can't use descendant of the role to be its parent",
       );
     }
-
-    await this.rolesRepository.update(id, {
+    const updatedRole = await this.rolesRepository.preload({
+      id,
       name,
       description,
       reportsTo,
     });
-    return this.findOne(id);
+    return this.rolesRepository.save(updatedRole);
   }
 
   async getAllRolesExceptDescendants(id: string) {

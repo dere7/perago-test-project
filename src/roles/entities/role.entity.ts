@@ -1,5 +1,5 @@
-import { ApiHideProperty, ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { ApiHideProperty } from "@nestjs/swagger";
+import { IsUUID, IsNotEmpty, IsOptional, IsString } from "class-validator";
 import { Employee } from "../../employees/entities/employee.entity";
 import {
   Column,
@@ -17,17 +17,22 @@ export class Role {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @ApiProperty()
   @Column({ length: 100 })
   @IsString()
   @IsNotEmpty()
   name: string;
 
-  @ApiProperty({ required: false })
   @Column("text", { nullable: true })
   @IsString()
   @IsOptional()
   description?: string;
+
+  /**
+   * It is optional in the case of the topmost role(e.g. CEO)
+   */
+  @IsUUID()
+  @IsOptional()
+  parentId?: string;
 
   @ApiHideProperty()
   @TreeParent({ onDelete: "CASCADE" })
@@ -37,7 +42,6 @@ export class Role {
   @TreeChildren()
   children: Role[];
 
-  @ApiProperty()
   @OneToMany(() => Employee, (employee) => employee.role, {
     onDelete: "CASCADE",
   })

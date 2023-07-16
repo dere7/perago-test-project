@@ -3,7 +3,7 @@ import { INestApplication, ValidationPipe } from "@nestjs/common";
 import * as request from "supertest";
 import { AppModule } from "../src/app.module";
 import { RolesService } from "src/roles/roles.service";
-import { Role } from "src/roles/entities/role.entities";
+import { Role } from "src/roles/entities/role.entity";
 
 describe("Roles E2E", () => {
   let app: INestApplication;
