@@ -16,7 +16,7 @@ import { CreateRoleDto } from "./dto/create-role.dto";
 import { UpdateRoleDto } from "./dto/update-role.dto";
 import { DeleteRoleDto } from "./dto/delete-role.dto";
 import { ApiTags } from "@nestjs/swagger";
-import { FindAllQueryDto } from "./dto/find-all-query.dto";
+import { FindAllQueryDto, PaginationQueryDto } from "./dto/find-all-query.dto";
 
 @ApiTags("roles")
 @Controller("roles")
@@ -42,8 +42,11 @@ export class RolesController {
    * returns all roles along their associated employees under specified role
    */
   @Get(":id/employees")
-  findEmployeesOfRole(@Param("id", ParseUUIDPipe) id: string) {
-    return this.rolesService.findAllDescendants(id);
+  findEmployeesOfRole(
+    @Param("id", ParseUUIDPipe) id: string,
+    @Query() { limit, page }: PaginationQueryDto,
+  ) {
+    return this.rolesService.findAllDescendants(id, limit, page);
   }
 
   @Get(":id/except_descendants")

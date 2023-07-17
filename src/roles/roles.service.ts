@@ -50,21 +50,26 @@ export class RolesService {
     return role;
   }
 
-  async findAllDescendants(id: string) {
+  async findAllDescendants(id: string, limit = 10, page = 1) {
+    const skip = limit * (page - 1);
     const role = await this.findOne(id);
     const descendants = await this.rolesRepository.findDescendants(role, {
       relations: ["employees", "reportsTo"],
     });
-    const employees = descendants
+    let employees = descendants
       .map(({ id, employees }) => employees.map((e) => ({ ...e, roleId: id })))
       .flat();
+    const total = employees.length;
+    const pages = Math.ceil(total / limit);
+    employees = employees.slice(skip, skip + limit);
+    console.log(employees.length, skip, limit);
     for await (const e of employees) {
       e.role = await this.rolesRepository.findOne({
         where: { id: e.roleId },
         relations: { reportsTo: true },
       });
     }
-    return employees;
+    return { page, limit, pages, total, results: employees };
   }
 
   // checks if role2 is descendant of role1
