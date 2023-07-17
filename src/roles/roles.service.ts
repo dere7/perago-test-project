@@ -57,18 +57,13 @@ export class RolesService {
       relations: ["employees", "reportsTo"],
     });
     let employees = descendants
-      .map(({ id, employees }) => employees.map((e) => ({ ...e, roleId: id })))
+      .map(({ employees, reportsTo, ...role }) =>
+        employees.map((e) => ({ ...e, role, reportsTo })),
+      )
       .flat();
     const total = employees.length;
     const pages = Math.ceil(total / limit);
     employees = employees.slice(skip, skip + limit);
-    console.log(employees.length, skip, limit);
-    for await (const e of employees) {
-      e.role = await this.rolesRepository.findOne({
-        where: { id: e.roleId },
-        relations: { reportsTo: true },
-      });
-    }
     return { page, limit, pages, total, results: employees };
   }
 
@@ -104,7 +99,9 @@ export class RolesService {
   async getAllRolesExceptDescendants(id: string) {
     const role = await this.findOne(id);
     const descendants = await this.rolesRepository.findDescendants(role);
-    const descendantIds = descendants.map((r) => r.id);
+    const descendantIds = descendants
+      .map((r) => r.id)
+      .filter((id) => id !== role.id);
     return this.rolesRepository.find({
       where: {
         id: Not(In(descendantIds)),
