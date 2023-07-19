@@ -3,10 +3,12 @@ import { AppModule } from "./app.module";
 import { SwaggerModule } from "@nestjs/swagger";
 import { ValidationPipe } from "@nestjs/common";
 import { swaggerConfig, swaggerOptions } from "./swagger";
+import { json } from "express";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors();
+  app.use(json({ limit: "5mb" }));
 
   const document = SwaggerModule.createDocument(app, swaggerConfig, {
     operationIdFactory: (_, methodKey: string) => methodKey,

@@ -1,7 +1,9 @@
 import { Transform } from "class-transformer";
-import { IsNumber } from "class-validator";
+import { IsNumber, IsOptional, IsString } from "class-validator";
 
 export class EmployeeFindAllQueryDto {
+  @IsOptional()
+  @IsString()
   q?: string = "";
   @Transform(({ value }) => value && Number(value))
   @IsNumber()
