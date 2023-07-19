@@ -111,12 +111,12 @@ describe("RolesService", () => {
 
   describe("findAll roles", () => {
     it("when isFlat is set to true", async () => {
-      await rolesService.findAll(true);
+      await rolesService.findAll(true, 10);
       expect(rolesRepository.find).toBeCalled();
     });
 
     it("when isFlat is set to false", async () => {
-      await rolesService.findAll();
+      await rolesService.findAll(false, 10);
       expect(rolesRepository.findTrees).toBeCalled();
     });
   });

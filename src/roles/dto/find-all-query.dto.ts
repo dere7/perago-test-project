@@ -1,9 +1,15 @@
 import { Transform } from "class-transformer";
-import { IsNumber } from "class-validator";
+import { IsBoolean, IsNumber, IsOptional } from "class-validator";
 
 export class FindAllQueryDto {
+  @IsBoolean()
+  @Transform(({ value }) => (value && value === "true" ? true : false))
   flat?: boolean = false;
-  depth?: number = Infinity;
+
+  @IsOptional()
+  @IsNumber()
+  @Transform(({ value }) => value && Number(value))
+  depth?: number = 10;
 }
 
 export class PaginationQueryDto {

@@ -29,7 +29,7 @@ export class RolesService {
     return this.rolesRepository.count();
   }
 
-  async findAll(isFlat = false, depth = Infinity) {
+  async findAll(isFlat, depth) {
     if (isFlat) {
       return this.rolesRepository.find({
         relations: { employees: true, reportsTo: true },
