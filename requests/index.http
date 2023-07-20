@@ -9,7 +9,7 @@ GET http://localhost:3000/roles?flat=true&limit=2&page=2
 GET http://localhost:3000/roles/
 
 ###
-GET http://localhost:3000/roles/c005ed62-53e4-4845-a167-7bd919866bed/except_descendants
+GET http://localhost:3000/roles/878576f6-4dfb-42d7-b57a-c4285c3263e3
 
 ### create new role
 POST http://localhost:3000/roles
