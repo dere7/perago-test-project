@@ -8,17 +8,16 @@ Content-Type: application/json
   "gender": "M",
   "birthDate": "2000-03-05T11:51:06.753Z",
   "hireDate": "2020-07-05T11:51:06.753Z",
-  "roleId": "0764a223-5494-4f41-b204-81a148fae0db",
+  "roleId": "d99deb28-bd68-4072-a6fc-006d3bc8438d",
   "photo": "https://robohash.org/hicveldicta.png?size=50x50&set=set1"
 }
 
 ###
 GET http://localhost:3000/employees/
 ###
-GET http://localhost:3000/employees/8146bb8e-9a19-4165-b5dd-eaa045b1a443
-
+GET http://localhost:3000/employees/73540668-9a17-4f2f-ad05-578d8e3d8b34
 ###
-PATCH http://localhost:3000/employees/8146bb8e-9a19-4165-b5dd-eaa045b1a443
+PATCH http://localhost:3000/employees/c30dbd20-3c46-4824-8d29-35320c297a11
 Content-Type: application/json
 
 {
@@ -27,4 +26,4 @@ Content-Type: application/json
 
 
 ###
-DELETE http://localhost:3000/employees/c76fd9c9-fd43-4c22-82b2-916ce20a69c5
+DELETE http://localhost:3000/employees/73540668-9a17-4f2f-ad05-578d8e3d8b34

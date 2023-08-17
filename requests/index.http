@@ -3,22 +3,21 @@ GET http://localhost:3000/roles
 
 
 ### Get list of roles
-GET http://localhost:3000/roles?flat=true&limit=2&page=2
+GET http://localhost:3000/roles?flat=true
 
 ###
-GET http://localhost:3000/roles/
+GET http://localhost:3000/roles?depth=2
 
 ###
-GET http://localhost:3000/roles/878576f6-4dfb-42d7-b57a-c4285c3263e3
+GET http://localhost:3000/roles/96c2ab30-abf8-41c4-af3e-28e919070322
 
 ### create new role
 POST http://localhost:3000/roles
 Content-Type: application/json
 
 {
-  "name": "UX designer",
-  "description": "A UX designer is designs the graphical user interface of an app, website, or device that a human interacts with",
-  "parentId": "b8ab33ab-29bf-4271-ad5b-3689733c74fd"
+  "name": "UI designer",
+  "parentId": "12874902-f885-4db3-807f-04474e566c9b"
 }
 
 ###
@@ -30,12 +29,12 @@ Content-Type: application/json
   "name": "CTO",
   "parentId": 1
 }
-###
-PATCH http://localhost:3000/roles/6
+### 878576f6-4dfb-42d7-b57a-c4285c3263e3
+PATCH http://localhost:3000/roles/b45a99c7-8935-4255-b7b9-3abe94fcd224
 Content-Type: application/json
 
 {
-  "parentId": 8
+  "parentId": "878576f6-4dfb-42d7-b57a-c4285c3263e3"
 }
 
 ###
@@ -52,4 +51,13 @@ Content-Type: application/json
 DELETE http://localhost:3000/roles/7fad1be0-5a11-4312-bf88-71420a2393bb
 
 ### delete a role with its children
-DELETE http://localhost:3000/roles/ee612665-819b-47a8-b087-a24a44d4c932
+DELETE http://localhost:3000/roles/12874902-f885-4db3-807f-04474e566c9b
+Content-Type: application/json
+
+{
+"parentId": "b45a99c7-8935-4255-b7b9-3abe94fcd224"  
+}
+###
+GET http://localhost:3000/roles/4452a3e4-09a1-4133-8d13-e9f3712d83c2/employees?limit=3&page=3
+###
+GET http://localhost:3000/roles/4452a3e4-09a1-4133-8d13-e9f3712d83c2/except_descendants

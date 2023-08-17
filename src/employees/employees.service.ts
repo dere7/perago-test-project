@@ -84,7 +84,7 @@ export class EmployeesService {
   async findOne(id: string) {
     const employee = await this.employeesRepository.findOne({
       where: { id },
-      relations: { role: true },
+      relations: { role: { reportsTo: true } },
     });
 
     if (!employee)
