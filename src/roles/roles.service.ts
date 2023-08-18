@@ -106,12 +106,13 @@ export class RolesService {
   async getAllRolesExceptDescendants(id: string) {
     const role = await this.findOne(id);
     const descendants = await this.rolesRepository.findDescendants(role);
-    const descendantIds = descendants
+    const excludedIds = descendants
       .map((r) => r.id)
       .filter((id) => id !== role.id);
+    excludedIds.push(role.id);
     return this.rolesRepository.find({
       where: {
-        id: Not(In(descendantIds)),
+        id: Not(In(excludedIds)),
       },
     });
   }
