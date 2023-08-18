@@ -93,7 +93,13 @@ export class EmployeesService {
   }
 
   async update(id: string, updateEmployeeDto: UpdateEmployeeDto) {
-    await this.employeesRepository.update(id, updateEmployeeDto);
+    const updatedEmployee = await this.employeesRepository.preload({
+      id,
+      ...updateEmployeeDto,
+      role: await this.rolesService.findOne(updateEmployeeDto.roleId),
+    });
+    if (!updatedEmployee)
+      throw new NotFoundException(`Can't find employee with id '${id}'`);
     return this.findOne(id);
   }
 
