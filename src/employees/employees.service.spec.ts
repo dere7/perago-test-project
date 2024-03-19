@@ -42,6 +42,8 @@ describe("EmployeesService", () => {
             save: jest.fn(),
             find: jest.fn(),
             findOne: jest.fn(),
+            upsert: jest.fn(),
+            findAndCount: jest.fn(),
             update: jest.fn(),
             delete: jest.fn(),
             count: jest.fn(),
@@ -87,8 +89,7 @@ describe("EmployeesService", () => {
 
   it("findAll employees", async () => {
     await service.findAll();
-    expect(repo.find).toHaveBeenCalled();
-    expect(repo.count).toHaveBeenCalled();
+    expect(repo.findAndCount).toHaveBeenCalled();
   });
 
   it("findOne employee", async () => {

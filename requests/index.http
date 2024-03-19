@@ -9,15 +9,15 @@ GET http://localhost:3000/roles?flat=true
 GET http://localhost:3000/roles?depth=2
 
 ###
-GET http://localhost:3000/roles/96c2ab30-abf8-41c4-af3e-28e919070322
+GET http://localhost:3000/roles/670abc90-8f13-41cb-860f-0b5dcfeb514e
 
 ### create new role
 POST http://localhost:3000/roles
 Content-Type: application/json
 
 {
-  "name": "UI designer",
-  "parentId": "12874902-f885-4db3-807f-04474e566c9b"
+  "name": "UX developer",
+  "parentId": "ee606125-ce40-4164-80eb-48b27bd811e0"
 }
 
 ###
@@ -51,7 +51,7 @@ Content-Type: application/json
 DELETE http://localhost:3000/roles/7fad1be0-5a11-4312-bf88-71420a2393bb
 
 ### delete a role with its children
-DELETE http://localhost:3000/roles/12874902-f885-4db3-807f-04474e566c9b
+DELETE http://localhost:3000/roles/817e1d92-c5ea-418a-b31a-a44020c9e3b9
 Content-Type: application/json
 
 {

@@ -17,7 +17,7 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json --silent",
+    "test:e2e": "PORT=5435 jest --config ./test/jest-e2e.json --silent",
     "typeorm": "typeorm-ts-node-commonjs",
     "postdb:reset": "ts-node seed.ts",
     "db:reset": "dropdb organization_structure && psql -f setup.sql"
@@ -58,7 +58,7 @@
     "supertest": "^6.1.3",
     "ts-jest": "29.0.5",
     "ts-loader": "^9.2.3",
-    "ts-node": "10.7.0",
+    "ts-node": "^10.9.1",
     "tsconfig-paths": "4.2.0",
     "typescript": "4.5.2"
   },

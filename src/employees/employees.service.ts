@@ -53,7 +53,7 @@ export class EmployeesService {
     const skip = (page - 1) * limit,
       take = limit;
 
-    const results = await this.employeesRepository.find({
+    const [results, total] = await this.employeesRepository.findAndCount({
       skip,
       take,
       where: {
@@ -69,7 +69,7 @@ export class EmployeesService {
       },
     });
 
-    const total = await this.countAll();
+    // const total = await this.countAll();
     const pages = Math.ceil(total / limit);
 
     return {
@@ -93,14 +93,17 @@ export class EmployeesService {
   }
 
   async update(id: string, updateEmployeeDto: UpdateEmployeeDto) {
-    const updatedEmployee = await this.employeesRepository.preload({
-      id,
-      ...updateEmployeeDto,
-      role: await this.rolesService.findOne(updateEmployeeDto.roleId),
-    });
+    const updatedEmployee = await this.employeesRepository.upsert(
+      {
+        id,
+        ...updateEmployeeDto,
+        role: await this.rolesService.findOne(updateEmployeeDto.roleId),
+      },
+      { conflictPaths: { id: true } },
+    );
     if (!updatedEmployee)
       throw new NotFoundException(`Can't find employee with id '${id}'`);
-    return this.findOne(id);
+    return updatedEmployee;
   }
 
   async remove(id: string) {

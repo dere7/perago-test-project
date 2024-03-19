@@ -143,6 +143,8 @@ const data: RoleData[] = [
   },
 ];
 
+console.log(process.env["HOST"],process.env["PORT"], process.env["PASSWORD"], process.env["DB_USERNAME"], process.env["DATABASE"])
+
 export const AppDataSource = new DataSource({
   type: "postgres",
   host: process.env["HOST"] || "localhost",
@@ -151,9 +153,9 @@ export const AppDataSource = new DataSource({
   password: process.env["PASSWORD"],
   database: process.env["DATABASE"] || "orga_structure",
   synchronize: true,
-  // logging: true,
+  logging: true,
   entities: [Role, Employee],
-  // ssl: true,
+  ssl: true,
 });
 
 async function main() {

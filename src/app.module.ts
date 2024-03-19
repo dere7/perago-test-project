@@ -21,7 +21,7 @@ import { EmployeesModule } from "./employees/employees.module";
             : config.get("DATABASE"),
         autoLoadEntities: true,
         synchronize: config.get("NODE_ENV") !== "production",
-        ssl: config.get("NODE_ENV") === "production",
+	ssl: true,
       }),
       inject: [ConfigService],
     }),
