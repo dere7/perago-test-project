@@ -12,7 +12,7 @@ import { EmployeesModule } from "./employees/employees.module";
       useFactory: (config: ConfigService) => ({
         type: "postgres",
         host: config.get("HOST") || "localhost",
-        port: Number(config.get("PORT")) || 5432,
+        port: Number(config.get("DB_PORT")) || 5432,
         username: config.get("DB_USERNAME") || "org_user",
         password: config.get("PASSWORD"),
         database:

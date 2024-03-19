@@ -148,7 +148,7 @@ console.log(process.env["HOST"],process.env["PORT"], process.env["PASSWORD"], pr
 export const AppDataSource = new DataSource({
   type: "postgres",
   host: process.env["HOST"] || "localhost",
-  port: Number(process.env["PORT"]) || 5432,
+  port: Number(process.env["DB_PORT"]) || 5432,
   username: process.env["DB_USERNAME"],
   password: process.env["PASSWORD"],
   database: process.env["DATABASE"] || "orga_structure",
